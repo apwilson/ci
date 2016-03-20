@@ -1,7 +1,7 @@
 TEMP_DIR="$(mktemp -d)"
 
 # deletes the temp directory
-function cleanup {
+cleanup() {
   rm -rf "$TEMP_DIR"
   # echo "Deleted temp working directory $TEMP_DIR"
 }
