@@ -23,7 +23,8 @@ app.post('/receivepost', function(req, res) {
   console.log('request %s from %s with %s', req.baseUrl, req.ip, JSON.stringify(req.body, null, 2));
   const id = req.body['head_commit']['id'];
   const repo = req.body['repository']['html_url'];
-  const clone = spawn('sh', ['clone.sh', id, repo], {
+  const name = req.body['repository']['name'];
+  const clone = spawn('sh', ['clone.sh', id, repo, name], {
   cwd: process.cwd(),
   env: process.env
 });
