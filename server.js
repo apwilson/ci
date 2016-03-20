@@ -4,6 +4,7 @@ const https = require('https');
 const privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
 const certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
 const credentials = {key: privateKey, cert: certificate};
+const url = require('url');
 
 const spawn = require('child_process').spawn;
 const express = require('express');
@@ -24,6 +25,7 @@ app.post('/receivepost', function(req, res) {
   const id = req.body['head_commit']['id'];
   const repo = req.body['repository']['html_url'];
   const name = req.body['repository']['name'];
+  const statusesUrl = req.body['repository']['statuses_url'];
   const clone = spawn('sh', ['clone.sh', id, repo, name], {
   cwd: process.cwd(),
   env: process.env
@@ -39,27 +41,29 @@ app.post('/receivepost', function(req, res) {
   clone.on('close', function(code) {
     console.log('child process exited with code %s',code);
 
-    var post_data = JSON.stringify({
+    var postData = JSON.stringify({
       "state": "success",
-      "target_url": repo + "/statuses/" + id,
+      "target_url":  "https://104.154.59.105/build/" + id,
       "description": "The build succeeded!",
       "context": "continuous-integration/apwilson/ci"
     }, null, 2);
 
      // An object of options to indicate where to post to
-     var post_options = {
-         host: 'closure-compiler.appspot.com',
+     var parsedUrl = url.parse(statusesUrl);
+     statusesUrl;
+     var postOptions = {
+         host: parsedUrl.hostname,
          port: '80',
-         path: '/compile',
+         path: parsedUrl.pathname,
          method: 'POST',
          headers: {
              'Content-Type': 'application/x-www-form-urlencoded',
-             'Content-Length': Buffer.byteLength(post_data)
+             'Content-Length': Buffer.byteLength(postData)
          }
      };
 
      // Set up the request
-     var post_req = http.request(post_options, function(res) {
+     var postReq = http.request(postOptions, function(res) {
          res.setEncoding('utf8');
          res.on('data', function (chunk) {
              console.log('Response: ' + chunk);
@@ -67,8 +71,8 @@ app.post('/receivepost', function(req, res) {
      });
 
      // post the data
-     post_req.write(post_data);
-     post_req.end();
+     postReq.write(postData);
+     postReq.end();
 
   });
 });
