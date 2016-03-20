@@ -1,14 +1,14 @@
-var fs = require('fs');
-var http = require('http');
-var https = require('https');
-var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
-var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
-var credentials = {key: privateKey, cert: certificate};
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
+const privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
+const certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
+const credentials = {key: privateKey, cert: certificate};
 
-
-var express = require('express');
-var app = express();
-var bodyParser  = require('body-parser');
+const spawn = require('child_process').spawn;
+const express = require('express');
+const app = express();
+const bodyParser  = require('body-parser');
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -21,10 +21,23 @@ app.get('/', function(req, res) {
 
 app.post('/receivepost', function(req, res) {
   console.log('request %s from %s with %s', req.baseUrl, req.ip, JSON.stringify(req.body, null, 2));
-});
+  const id = req.body['head_commit']['id'];
+  const repo = req.body['repository']['html_url'];
+  const clone = spawn('clone.sh', [id, repo]);
+  clone.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
 
-var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
+  clone.stderr.on('data', (data) => {
+    console.log(`stderr: ${data}`);
+  });
+
+  clone.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
+  });});
+
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
 
 httpServer.listen(80);
 httpsServer.listen(443);
