@@ -3,6 +3,7 @@ const http = require('http');
 const https = require('https');
 const privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
 const certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
+const githubAccessToken = fs.readFileSync('access_token', 'utf8');
 const credentials = {key: privateKey, cert: certificate};
 const url = require('url');
 
@@ -59,7 +60,7 @@ app.post('/receivepost', function(req, res) {
      var postOptions = {
          host: parsedUrl.hostname,
          port: '80',
-         path: parsedUrl.pathname,
+         path: parsedUrl.pathname + "?access_token=" + githubAccessToken,
          method: 'POST',
          headers: {
              'Content-Type': 'application/x-www-form-urlencoded',
