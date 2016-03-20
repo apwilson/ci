@@ -31,7 +31,8 @@ app.post('/receivepost', function(req, res) {
   const id = req.body['head_commit']['id'];
   const repo = req.body['repository']['html_url'];
   const name = req.body['repository']['name'];
-  const statusesUrl = req.body['repository']['statuses_url'];
+  var statusesUrl = req.body['repository']['statuses_url'];
+  statusesUrl = statusesUrl.replace("{sha}", id);
   const clone = spawn('sh', ['clone.sh', id, repo, name], {
   cwd: process.cwd(),
   env: process.env
