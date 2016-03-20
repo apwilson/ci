@@ -73,7 +73,7 @@ app.post('/receivepost', function(req, res) {
 
 
      // Set up the request
-     var postReq = http.request(postOptions, function(res) {
+     var postReq = https.request(postOptions, function(res) {
          res.setEncoding('utf8');
          res.on('data', function (chunk) {
              console.log('Response: ' + chunk);
