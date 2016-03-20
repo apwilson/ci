@@ -43,5 +43,5 @@ app.post('/receivepost', function(req, res) {
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
 
-httpServer.listen(8080);
+httpServer.listen(80);
 httpsServer.listen(443);
