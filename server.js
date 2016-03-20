@@ -59,7 +59,7 @@ app.post('/receivepost', function(req, res) {
      statusesUrl;
      var postOptions = {
          host: parsedUrl.hostname,
-         port: '80',
+         port: '443',
          path: parsedUrl.pathname + "?access_token=" + githubAccessToken,
          method: 'POST',
          headers: {
@@ -67,6 +67,9 @@ app.post('/receivepost', function(req, res) {
              'Content-Length': Buffer.byteLength(postData)
          }
      };
+
+     console.log('Posting to %s at path %s', postOptions['host'], postOptions['path']);
+
 
      // Set up the request
      var postReq = http.request(postOptions, function(res) {
