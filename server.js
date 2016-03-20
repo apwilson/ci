@@ -62,6 +62,7 @@ app.post('/receivepost', function(req, res) {
          port: '443',
          path: parsedUrl.pathname + "?access_token=" + githubAccessToken,
          method: 'POST',
+         forever: true,
          headers: {
              'Content-Type': 'application/x-www-form-urlencoded',
              'Content-Length': Buffer.byteLength(postData)
