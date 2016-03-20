@@ -19,6 +19,10 @@ app.get('/', function(req, res) {
   res.send('Hello World!');
 });
 
+app.post('/receivepost', function(req, res) {
+  console.log('request %s from %s with %s', req.baseUrl, req.ip, JSON.stringify(req.body, null, 2));
+});
+
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 
