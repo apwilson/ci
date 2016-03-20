@@ -20,6 +20,11 @@ app.get('/', function(req, res) {
   res.send('Hello World!');
 });
 
+app.get('/build/*', function(req, res) {
+  console.log('request %s from %s with %s %s', req.baseUrl, req.ip, JSON.stringify(req.body, null, 2), process.cwd());
+  res.send('Hello World!');
+});
+
 app.post('/receivepost', function(req, res) {
   console.log('request %s from %s with %s', req.baseUrl, req.ip, JSON.stringify(req.body, null, 2));
   const id = req.body['head_commit']['id'];
