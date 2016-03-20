@@ -24,16 +24,16 @@ app.post('/receivepost', function(req, res) {
   const id = req.body['head_commit']['id'];
   const repo = req.body['repository']['html_url'];
   const clone = spawn('clone.sh', [id, repo]);
-  clone.stdout.on('data', (data) => {
-    console.log(`stdout: ${data}`);
+  clone.stdout.on('data', function(data) {
+    console.log('stdout: ${data}');
   });
 
-  clone.stderr.on('data', (data) => {
-    console.log(`stderr: ${data}`);
+  clone.stderr.on('data', function(data) {
+    console.log('stderr: ${data}');
   });
 
-  clone.on('close', (code) => {
-    console.log(`child process exited with code ${code}`);
+  clone.on('close', function(code) {
+    console.log('child process exited with code ${code}');
   });});
 
 const httpServer = http.createServer(app);
