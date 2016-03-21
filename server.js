@@ -6,6 +6,7 @@ const certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
 const githubAccessToken = fs.readFileSync('access_token', 'utf8');
 const credentials = {key: privateKey, cert: certificate};
 const url = require('url');
+const querystring = require('querystring');
 
 const spawn = require('child_process').spawn;
 const express = require('express');
@@ -48,12 +49,12 @@ app.post('/receivepost', function(req, res) {
   clone.on('close', function(code) {
     console.log('child process exited with code %s',code);
 
-    var postData = JSON.stringify({
+    var postData = querystring({
       "state": "success",
       "target_url":  "https://104.154.59.105/build/" + id,
       "description": "The build succeeded!",
       "context": "continuous-integration/apwilson/ci"
-    }, null, 2);
+    });
     console.log('postData %s',postData);
      // An object of options to indicate where to post to
      var parsedUrl = url.parse(statusesUrl);
