@@ -54,7 +54,7 @@ app.post('/receivepost', function(req, res) {
       "description": "The build succeeded!",
       "context": "continuous-integration/apwilson/ci"
     }, null, 2);
-
+    console.log('postData %s',postData);
      // An object of options to indicate where to post to
      var parsedUrl = url.parse(statusesUrl);
      statusesUrl;
@@ -66,12 +66,7 @@ app.post('/receivepost', function(req, res) {
          forever: true,
          agent: false,
          key: privateKey,
-         cert: certificate,
-         headers: {
-             'Content-Type': 'application/x-www-form-urlencoded',
-             'Content-Length': Buffer.byteLength(postData)
-         }
-
+         cert: certificate
      };
 
      console.log('Posting to %s at path %s', postOptions['host'], postOptions['path']);
